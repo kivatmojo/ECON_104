@@ -6,7 +6,7 @@ Dataset: [Most Streamed Songs on Spotify in 2023](https://www.kaggle.com/dataset
 
 ***
 
-## Table of Contente
+## Table of Contents
 1. Load and Prepare Data  
 2. Analysis of Data  
 3. Regression Model  

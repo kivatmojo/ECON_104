@@ -21,43 +21,63 @@ Dataset: [Most Streamed Songs on Spotify in 2023](https://www.kaggle.com/dataset
 7. Residuals
 8. RESET Test
 9. Test for Heteroskedasticity
-10. Model Selection and Comparison
-11. Estimate Model Performance
-12. Conclusions and Findings
+10. Adjusting for Heteroskedasticity
+11. Model Selection and Comparison
+12. Estimate Model Performance
+13. Conclusions and Findings
 
 ***
 ## Load and Prepare Data
-
+```{r}
+# Load Data
+original_data <- read.csv("spotify-2023.csv") # Working Data
+music_data <- read.csv("spotify-2023.csv") # Working Data
+```
 ***
 ## Analysis of Data  
-
+```{r}
+```
 ***
 ## Regression Model  
-
+```{r}
+```
 ***
 ## Analysis of Observations
-
+```{r}
+```
 ***
 ## Variable Selection
-
+```{r}
+```
 ***
 ## Multicollinearity
-
+```{r}
+```
 ***
 ## Residuals
-
+```{r}
+```
 ***
 ## RESET Test
-
+```{r}
+```
 ***
 ## Test for Heteroskedasticity
-
+```{r}
+```
+***
+## Adjusting for Heteroskedasticity
+```{r}
+```
 ***
 ## Model Selection and Comparison
-
+```{r}
+```
 ***
 ## Estimate Model Performance
-
+```{r}
+```
 ***
 ## Conclusions and Findings
-
+```{r}
+```

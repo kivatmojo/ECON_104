@@ -257,33 +257,237 @@ regmod2 <- lm(streams_thousands~artist_count + in_apple_charts + in_apple_playli
 
 ***
 ## Multicollinearity
-```{r}
+```r
+tab <- tidy(vif(regmod2))
+kable(tab, col.names=c("variables","VIF"))
 ```
+Variance inflation factor test (VIF) determines if any regressors are correlated with each other. Colinearity between explanatory variables inflate the variance of the residuals and standard errors. A score of above 5 in the VIF test indicates that the variable is colinear.   
+
+In our test of the explanatory variables, all displayed scores of less than 5, revealing there are no problems with colinearity. I found this slightly surprising because I’d imagine that spotify playlist data and apple playlist data provide the same prediction power. However, because there is significant variation within our dataset, these two variables do provide substantial power to estimate the parameters precisely.  
 ***
 ## Residuals
-```{r}
+```r
+res <- residuals(regmod2)
+yhat <- fitted(regmod2)
+
+par(mfrow=c(2,4))
+
+plot(yhat,res,xlab="fitted values"
+     , ylab="residuals")
+plot(music_data$artist_count,res,xlab="Artist Count"
+     , ylab="residuals")
+plot(music_data$in_spotify_playlists,res,xlab="Spotify Playlists"
+     , ylab="residuals")
+plot(music_data$in_apple_playlists,res,xlab="Apple Playlists"
+     , ylab="residuals")
+plot(music_data$in_spotify_charts,res,xlab="Spotify Charts"
+     , ylab="residuals")
+plot(music_data$in_apple_charts,res,xlab="Apple Charts"
+     , ylab="residuals")
+plot(music_data$speechiness,res,xlab="Speechiness"
+     , ylab="residuals")
+plot(music_data$valence,res,xlab="Valence"
+     , ylab="residuals")
 ```
+After plotting the residuals against the fitted values, we noticed an increase in the variance of error terms in songs ranging from 0 to 50,000 predicted streams, then slowly tapering down after.  
+
+This makes sense as it’s harder to predict streams of songs that are not very popular. As such, the model will over predict certain songs and under-predict others. Overall, this suggests a trend in the errors and a sign of heteroskedasticity.  
+
+```r
+spreadLevelPlot(regmod2)
+```
+Looking at the spread-level plot that regresses the fitted values of Y on the residuals, we noticed an upward trend. This means that when the predicted number of streams a song has based on the model, the larger the error there is, thus heteroskedasticity is present.  
+
 ***
 ## RESET Test
-```{r}
+```r
+resettest(regmod2, power=2:3, type="fitted")
 ```
+When running our reset test, the P-values are insignificant and the F-statistic exceeds the critical value, so we reject the null hypothesis that the coefficients of the new terms are zero. In other words, a zero p-value indicates that adding a higher power or interaction does not improve the model.  
+
+```r
+regmod3 <- lm(streams_thousands~artist_count 
+              + in_spotify_playlists + I(in_spotify_playlists^2) 
+              + in_apple_playlists  
+              + in_spotify_charts + I(in_spotify_charts^2) 
+              + in_apple_charts
+              + speechiness + valence
+              , data=music_data)
+
+resettest(regmod3, power=2:3, type="fitted")
+```
+Through intuition, as well as trial and error, we concluded that "in_spotify_playlists" and "in_spotify_charts" is a better predictor of streams when we transformed them into an exponential function. The RESET test results on the new model also confirms that the model is now better specified.
+
+The choice of variables to transform makes sense because the more playlists and charts a song is in, the more it gets into other playlists and charts, which ultimately leads to more streams.  
 ***
 ## Test for Heteroskedasticity
-```{r}
+```r
+# NCV Test
+ncvTest(regmod3)
 ```
+After running the NCV test, since the p-value is less than the 5% significance level, we reject the null hypothesis that the variance is constant. Thus, our model has non-constant variance.  
+
+```r
+# BP Test
+bptest(regmod3)
+```
+The BP test results signifies heteroskedasticity.  
+
+```r
+# GQ Test
+gqtest(regmod3)
+```
+The GQ test says no heteroskedasticity is present.  
+
+Since the GQ test and the BP test disagrees, we need to perform the White test.
+
+```r
+alpha <- 0.05
+ressq <- resid(regmod3)^2
+
+modres <- lm(ressq~artist_count + in_spotify_playlists + I(in_spotify_playlists^2) 
+              + in_apple_playlists  
+              + in_spotify_charts + I(in_spotify_charts^2) 
+              + in_apple_charts
+              + instrumentalness + speechiness
+              , data=music_data)
+summary(modres)
+
+N <- nobs(modres)
+gmodres <-glance(modres)
+S <- gmodres$df
+chisqcr <- qchisq(1-alpha, S-1)
+Rsqres <- gmodres$r.squared
+chisq <- N*Rsqres
+pval <- 1-pchisq(chisq,S-1)
+print(pval)
+```
+The white test confirms the presence of heteroskedasticity.  
+
 ***
 ## Adjusting for Heteroskedasticity
-```{r}
+
+```r
+#Using white/robust standard errors
+cov1 <- hccm(regmod2, type="hc1")
+coeftest(regmod2, vcov.=cov1)
+
+# Standard SE
+coeftest(regmod2)
 ```
+These results show that there is an increase in Std. Error when trying to fix the model with the White Robust Std. Errors.  
+
+Thus, we are going to attempt to use GLS.
+
+```r
+music_data[is.na(music_data) | music_data=="Inf"] = NA
+
+music_nozero <- data.frame(music_data$streams_thousands,music_data$artist_count,
+                           music_data$in_spotify_playlists, music_data$in_apple_playlists, 
+                           music_data$in_spotify_charts, music_data$in_apple_charts, 
+                           music_data$speechiness, music_data$valence)
+colnames(music_nozero) <- c("streams_thousands", "artist_count", "in_spotify_playlists", 
+                            "in_apple_playlists", "in_spotify_charts","in_apple_charts", 
+                            "speechiness","valence")
+
+music_nozero <- filter(music_data, streams_thousands > 0, artist_count > 0, 
+                       in_spotify_playlists > 0, in_apple_playlists > 0, 
+                       in_spotify_charts > 0, in_apple_charts > 0, speechiness > 0, 
+                       valence >0) 
+
+regmod3_b <- lm(streams_thousands~artist_count + in_spotify_playlists + I(in_spotify_playlists^2) 
+              + in_apple_playlists  
+              + in_spotify_charts + I(in_spotify_charts^2) 
+              + in_apple_charts
+              + speechiness + valence
+              , data=music_nozero)
+
+# Feasible GLS
+ehatsq <- resid(regmod3_b)^2
+sighatsq.ols <- lm(log(ehatsq)~log(artist_count) 
+             + log(in_spotify_playlists) + log(in_spotify_playlists^2)
+             + log(in_apple_playlists)
+             + log(in_spotify_charts) + log(in_spotify_charts^2) 
+             + log(in_apple_charts)
+             + log(speechiness) + log(valence)
+             , data=music_nozero)
+vari <- exp(fitted(sighatsq.ols)) #undo log
+regmod.fgls <- lm(streams_thousands~artist_count 
+              + in_spotify_playlists + I(in_spotify_playlists^2) 
+              + in_apple_playlists
+              + in_spotify_charts + I(in_spotify_charts^2) 
+              + in_apple_charts
+              + speechiness + valence
+              , weights=1/vari, data=music_nozero)
+
+tidy(regmod.fgls)
+```
+Feasible GLS gives us a significantly lower SE.
+
 ***
 ## Model Selection and Comparison
-```{r}
+```r
+# Running BIC using model with FGLS
+ss2test = regsubsets(streams_thousands~artist_count
+              + in_spotify_playlists + I(in_spotify_playlists^2) 
+              + in_apple_playlists  
+              + in_spotify_charts + I(in_spotify_charts^2) 
+              + in_apple_charts
+              + speechiness + valence
+              , weights=1/vari, data=music_nozero) 
+
+ss2_sumtest <- summary(ss2test)
+plot(ss2_sumtest$bic)
+ss2_sumtest$bic
+ss2_sumtest
+```
+We ran the BIC test on our model with FGLS, and the result concluded to the 
+best model being the one with 4 variables:   
+  
+artist_count, in_spotify_playlists, in_spotify_playlists^2 and in_apple_playlists
+
+```r
+# Make new model
+music_mod <- data.frame(music_nozero$streams_thousands,music_nozero$artist_count, 
+                        music_nozero$in_spotify_playlists,I(music_nozero$in_spotify_playlists^2), 
+                        music_nozero$in_apple_playlists)
+colnames(music_mod) <- c("streams_thousands", "artist_count", "in_spotify_playlists",
+                         "in_spotify_playlists^2", "in_apple_playlists")
 ```
 ***
 ## Estimate Model Performance
-```{r}
+```r
+# k-Fold Cross Validation
+
+set.seed(1)
+train_control <- trainControl(method="cv", number = 10)
+model_train <- train(streams_thousands~., data=music_mod,
+                     method = "lm",trControl=train_control, weights=1/vari)
+print(model_train)
 ```
+Once we find our FGLS model that accounts for heteroskedasticity, the final step is to determine how accurate our model is. Due to this, we applied the K-fold cross validation test with 10 folds and an 80-20 split for training and testing, yielding an RMSE of 174,046. This represents 0.00008% of the data range (2,135,150,000). Our interpretation is reinforced by our models R squared of 80% which is precise by industry standards.
 ***
 ## Conclusions and Findings
-```{r}
+```r
+regmod.fgls <- lm(streams_thousands~artist_count 
+              + in_spotify_playlists + I(in_spotify_playlists^2) 
+              + in_apple_playlists
+              , weights=1/vari, data=music_mod)
+              
+summary(regmod.fgls)
 ```
+
+In our project, we used spotify data to create a model that best predicts the number of streams a song will have based on its music characteristics and how many playlists and charts it lands in.  
+
+After doing a constant loop of cleaning and analyzing the data through data manipulations and visualizations, we ran that data and its regression through a series of tests to test for variable importance, heteroskedasticity, and model specification, then adjusted our model to be better fit through using FGLS and higher order terms in our model. Lastly, we used the resulting model and ran it on the AIC and BIC test for model selection, and it gave us the desired model for predicting streams.  
+
+To evaluate our final model, we tested the model using k-Fold Cross Validation with k=10. The test concluded for our model to have an RMSE of 174,990.7 which means our model in average misses the likely number of streams a song has by 174,990.7 streams.   
+
+We deem this to be reasonable considering our dataset has a lot of unmitigated outliers that scales up to 2 billion streams.  
+
+Our final model to predict a song's number of streams is: $STREAMS = 129110.8402712 - 15378.0140630*ARTISTCOUNT + 94.0297995*SPOTIFYPLAYLISTS - 0.0016709*SPOTIFYPLAYLISTS^2 + 748.5154211*APPLEPLAYLISTS$  
+
+This aligns with real-world theory where aside from virality, the biggest reason of a song's success is who the song is by and if it has features to reach a broader audience, and if the song is in people's personal playlists.   
+
+A note on playlists is that the behavior of playlists is an exponential function because the more a song is in a playlist, the more people find the song or hear of the song from a friend and then adding that song to their own playlists, and so on.  
+

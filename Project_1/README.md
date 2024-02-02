@@ -24,7 +24,7 @@ Dataset: [Most Streamed Songs on Spotify in 2023](https://www.kaggle.com/dataset
 10. Adjusting for Heteroskedasticity
 11. Model Selection and Comparison
 12. Estimate Model Performance
-13. Conclusions and Findings
+13. [Conclusions and Findings](#conclusions-and-findings)
 
 ***
 ## Load and Prepare Data

@@ -160,16 +160,101 @@ In efforts to further understand our data, we created scatter plots for each exp
 Lastly, one variable I found interesting was the liveliness because the data shows that the more lively the song is, the more likely the song will earn less streams. This may pose an interesting reflection in consumer preferences where we prefer more relaxing than energetic songs. 
 ***
 ## Regression Model  
-```{r}
+```r
+regmod <- lm(streams_thousands ~ bpm + artist_count + 
+                       in_apple_charts +  
+                       in_apple_playlists + in_spotify_charts + 
+                       in_spotify_playlists + danceability + 
+                       valence + energy + 
+                       acousticness + instrumentalness + 
+                       liveness + speechiness, data = music_data)
+summary(regmod) 
 ```
+In looking at the regression summary, artist count, Apple playlist, Spotify playlist, Spotify charts, and valence are statistically significant - meaning there is a low chance that the prediction power of the variable is due to chance. One interesting trend I noticed was that many characteristic variables such as “energy” and “liveliness" were not statistically significant. This may be due to the fact that the measurement of these variables is subjective.  
+
+Spotify and Apple playlist variables represent the number of playlists the streamed song is in. As such, if a song is added into more playlists, the more streams it is likely to have. Artist count represents the number of artists within the song. Valence represents the amount of positivity a song conveys. A positive correlation between valence and streams makes sense as many people listen to music during leisure time and to feel good.  
+
+Artist count has a negative estimate, meaning that the more artists you add, the fewer streams the song will have. Playlist, Spotify charts, and valence are positive, consistent with the previously mentioned logic.  
 ***
 ## Analysis of Observations
-```{r}
+```r
+cooksd <- cooks.distance(regmod)
+n <- nrow(music_data)
+k <- length(regmod$coefficients) - 1
+cutoff <- 4/(n-k-1)
+
+music_screened <- music_data[cooksd < cutoff, ]
+
+# Comparing original data with screened data
+par(mfrow = c(1,2))
+
+boxplot(music_data$streams_thousands, ylab = "Total Streams in Thousands", main= "Original Data") 
+boxplot(music_screened$streams_thousands, ylab = "Total Streams in Thousands", main= "Screened Data")
+
+# Comparing 5 number statistics between original data and screened data
+summary(music_screened)
+```
+After creating box plots for acousticness, danceability, energy, instrulmentalness, liveness, speechiness, we noticed outliers for all these variables. One variable we found interesting was danceability because there were many outliers below the mean. This was interesting because I thought easy-to-dance to songs are more likely to become popular from TikTok.  
+
+There does not seem to be much difference between the data with "no outliers" and the original data through the boxplots. But when comparing the summary of the original dataset to the screened dataset, removing the outliers seems to have "shrunk" the dataset to not include some of those top-end outliers. 
+
+We decided to remove the outliers for these variables to create a model that more accurately predicts the number of streams any given song will have.  
+
+```r
+# Replace music_screened as music_data
+
+music_data <- music_data[cooksd < cutoff, ]
 ```
 ***
 ## Variable Selection
-```{r}
+### 1. Mallows CP  
+
+```r
+#Call and plot Mallows CP, and limit the y-axis to zoom in more on the plot
+
+ss=regsubsets(streams_thousands ~ bpm + artist_count + in_apple_charts 
+              + in_apple_playlists + in_spotify_charts + in_spotify_playlists 
+              + danceability + valence + energy + acousticness + instrumentalness 
+              + liveness + speechiness, data = music_data)
+
+subsets(ss, statistic="cp", legend=F, main= "Mallows CP"
+        , col= "steelblue4",ylim=c(0,8))
 ```
+Based on the data, Mallows CP identified the optimal model choice to have 7 parameters: artist count, in_apple_playlists, in_apple_charts, in_spotify_charts, in_spotify_playlists, valence, and instrumentalness into the regression model.  
+
+### 2. Boruta  
+
+```r
+# Call Boruta
+Bor.res <- Boruta(streams_thousands~., data=music_data, doTrace=2)
+
+plot(Bor.res, las=3, xlab="")
+
+boruta_signif <- names(Bor.res$finalDecision[Bor.res$finalDecision%in%c("Confirmed","Tentative")])
+boruta_signif_conf <- names(Bor.res$finalDecision[Bor.res$finalDecision%in%c("Confirmed")])
+boruta_signif_rej <- names(Bor.res$finalDecision[Bor.res$finalDecision%in%c("Rejected")])
+boruta_signif_tent <- names(Bor.res$finalDecision[Bor.res$finalDecision%in%c("Tentative")])
+
+print(boruta_signif_conf)
+```
+Predictors we are keeping with screened data:  
+- artist_count  
+- in_apple_charts  
+- in_apple_playlists  
+- in_spotify_charts  
+- in_spotify_playlists  
+- valence  
+- speechiness
+
+The Boruta algorithm suggested the model same except to replace instrumentalness with speechiness, which is the recommendation we decided to pursue.  
+
+```r
+# Make New Model
+regmod2 <- lm(streams_thousands~artist_count + in_apple_charts + in_apple_playlists  
+              + in_spotify_charts + in_spotify_playlists + valence + speechiness
+              , data=music_data)
+```
+
 ***
 ## Multicollinearity
 ```{r}

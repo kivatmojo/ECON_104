@@ -28,7 +28,7 @@ Dataset: [Most Streamed Songs on Spotify in 2023](https://www.kaggle.com/dataset
 
 ***
 ## Load and Prepare Data
-```{r}
+```r
 # Load Data
 original_data <- read.csv("spotify-2023.csv") # Reference Data
 music_data <- read.csv("spotify-2023.csv") # Working Data

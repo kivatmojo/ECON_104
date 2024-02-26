@@ -1,5 +1,5 @@
 # Multiple Regression Modelling
-## Markdown PDF: [Project_2.pdf](https://github.com/kivatmojo/econ_104/files/14412096/Project_2.pdf)
+## Markdown PDF: [Project_1.pdf](https://github.com/kivatmojo/econ_104/files/14412101/Project_1.pdf)
 
 ***
 

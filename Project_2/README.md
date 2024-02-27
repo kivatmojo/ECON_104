@@ -4,7 +4,7 @@
 
 Datasets Used:  
 
-1. SP500 Stocks  
+1. S&P 500 Stocks  
 https://www.kaggle.com/datasets/andrewmvd/sp-500-stocks?select=sp500\_stocks.csv 
 
 2. Daily News Sentiment Index  
@@ -25,7 +25,7 @@ https://fred.stlouisfed.org/series/REAINTRATREARAT10Y
 ***
 ## Load and Prepare Data
 
-```{r echo=TRUE, error=FALSE, message=FALSE, warning=FALSE, results='hide'}
+```r
 # Load Base Data
 
 stockmovement <- read.csv("sp500_stocks.csv")
@@ -120,22 +120,22 @@ Sentiment data refers to information gathered from various sources, such as soci
 
 ## Analysis of Observations
 
-```{r}
+```r
 summary(TSLA.table)
 ```
 
-```{r}
+```r
 summary(NVDA.table)
 ```
 
-```{r, out.width="75%", fig.align='center'}
+```r
 par(mfrow = c(1,2))
 
 boxplot(TSLA.table$percentagechange, xlab="Monthly % Change", main= "TSLA")
 boxplot(NVDA.table$percentagechange, xlab="Monthly % Change", main= "NVDA")
 ```
 
-```{r, out.width="75%", fig.align='center'}
+```r
 par(mfrow = c(1,3))
 boxplot(TSLA.table$sentiment, xlab="Monthly Sentiment")
 boxplot(TSLA.table$interest, xlab="Monthly Interest Rates")
@@ -149,14 +149,14 @@ In looking at the box plots of the macroeconomic predictors, we found that the o
 
 The lowest percentage change in TESLA’s stock in a month is -36% and the highest change was 81%. This is expected as TESLA has been known to be very volatile in the past due to a lot of contributing factors. NVIDIA’s monthly price changes ranged from -32% to 55%. This is also expected as NVIDIA has come out with very innovative technology and chip products, but has also experienced bottlenecks in production during the COVID-19 pandemic. With that being said, TESLA’s box plot shows more outliers, which suggest TESLA is more volatile - consistent with how our group feels in actuality. 
 
-```{r, out.width="75%", fig.align='center'}
+```r
 par(mfrow = c(1,2))
 
 hist(TSLA.table$percentagechange, xlab="Monthly % Change", main="TSLA")
 hist(NVDA.table$percentagechange, xlab="Monthly % Change", main="NVDA")
 ```
 
-```{r, out.width="75%", fig.align='center'}
+```r
 par(mfrow = c(1,3))
 hist(TSLA.table$sentiment, xlab="Monthly Sentiment", main= "")
 hist(TSLA.table$interest, xlab="Monthly Interest Rates", main= "")
@@ -166,7 +166,7 @@ mtext("Macroeconomic Data", side=3, outer=TRUE, line=-2, cex=1.5)
 
 In looking at the percent change in stock prices, TESLA’s is skewed toward the right and NVIDIA’s shows a relatively normal distribution. Our hypothesis for why TESLA experienced more drops in stock price is because their stock value is based on the potential of the company and not what the actual value of the company is today. For example, their price to earnings ratio is approximately 43 times.
 
-```{r, out.width="75%", fig.align='center'}
+```r
 par(mfrow = c(1,2))
 
 cor.TSLA = cor(TSLA.table %>% dplyr::select("% change" = "percentagechange", sentiment, interest))
@@ -176,7 +176,7 @@ cor.NVDA = cor(NVDA.table %>% dplyr::select("% change" = "percentagechange", sen
 corrplot(cor.NVDA, method = "square", tl.col="black", main= "NVDA")
 ```
 
-```{r, out.width="75%", fig.align='center'}
+```r
 par(mfrow = c(1,3))
 
 plot(percentagechange~sentiment, data=TSLA.table, ylab="% Change", xlab="Sentiment")
@@ -186,7 +186,7 @@ mtext("TSLA", side=3, outer=TRUE, line=-2, cex=1.5)
 
 ```
 
-```{r, out.width="75%", fig.align='center'}
+```r
 par(mfrow = c(1,3))
 
 plot(percentagechange~sentiment, data=NVDA.table, ylab="% Change", xlab="Sentiment")
@@ -206,7 +206,7 @@ On the other hand, NVIDIA displays weak correlation between Inflation rates and 
 
 ## Time Series Analysis on Variables
 
-```{r}
+```r
 # Convert Price Change Data into Time Series
 TSLA.ts<-ts(TSLA.table)
 
@@ -215,12 +215,12 @@ NVDA.ts <- ts(NVDA.table)
 
 ### Macroeconomic Data
 
-```{r, out.width="75%", fig.align='center'}
+```r
 tsdisplay(TSLA.ts[,"sentiment"], main="sentiment")
 tsdisplay(TSLA.ts[,"interest"], main="interest")
 ```
 ### TSLA and NVDA
-```{r, out.width="75%", fig.align='center'}
+```r
 plot(TSLA.ts[,"percentagechange"], ylab= "% change")
 lines(TSLA.ts[,"percentagechange"],col="red")
 lines(NVDA.ts[,"percentagechange"],col="black")
@@ -229,7 +229,7 @@ legend("topright", legend=c("TSLA", "NVDA"), text.col=c("red","black"),bty="n")
 
 ### TSLA
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # tsdisplay plot
 tsdisplay(TSLA.ts[,"percentagechange"], main="TSLA % change")
 
@@ -237,7 +237,7 @@ tsdisplay(TSLA.ts[,"percentagechange"], main="TSLA % change")
 
 ### NVDA
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # tsdisplay plot
 tsdisplay(NVDA.ts[,"percentagechange"], main="NVDA % change")
 ```
@@ -254,13 +254,13 @@ When looking at the ACF for NVIDIA, we see no strong correlation in errors acros
 ## AR(p) Models
 
 ### TSLA
-```{r}
+```r
 # Fit AR(p) model
 y1 <- TSLA.ts[,"percentagechange"]
 AR4y1 <- dynlm(y1~L(y1,4))
 ```
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # ACF & PACF of Residuals
 par(mfrow = c(1,2))
 
@@ -268,12 +268,12 @@ acf(AR4y1$residuals)
 pacf(AR4y1$residuals)
 ```
 
-```{r}
+```r
 # Re-Fit AR(p) model
 AR10y1 <- dynlm(y1~L(y1,1)+L(y1,4)+L(y1,10))
 ```
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # ACF & PACF of Residuals
 par(mfrow = c(1,2))
 
@@ -283,7 +283,7 @@ pacf(AR10y1$residuals)
 
 In plotting the Partial Autocorrelation Function of our AR(4) model of TESLA, we found large spikes but ultimately insignificant correlation in errors of lag one, and ten. As such, in our next model, we included these lags. The AR(10) model  PACF now has no significant spikes from lagged periods.
 
-```{r}
+```r
 # Train Test Split
 ## MODEL 1: AR(4)
 
@@ -305,7 +305,7 @@ RMSE1y1
 ```
 
 
-```{r}
+```r
 # Train Test Split
 ## MODEL 2: AR(10)
 
@@ -330,19 +330,19 @@ RMSE2y1
 
 Next, we want to compare our two models, AR(4) and AR(10), to see which is more accurate. First, we split our data in two-thirds and one-thirds to find the actual and predicted values of the model. Our AR(4)  model produced an RMSE of 22.04397 and our AR(10) Model produced an RMSE of 22.23962. This tells us that our model prediction is on average off by approximately 22% for TESLA. Given the context of TESLA stock and its volatility, the accuracy of our models are solid.
 
-```{r}
+```r
 # AIC
 AIC(AR4y1, AR10y1)
 ```
 
-```{r}
+```r
 # BIC
 BIC(AR4y1, AR10y1)
 ```
 
 However, in analyzing the AIC and BIC, the results show that the AR(10) model produced a lower (better) score than the AR(4) model. This tells us that the AR(10) model is a better forecast model but has very marginally more error. Additionally, this is telling us that the additional accuracy from the first, second, and tenth lag outweigh the penalty of adding more variables.
 
-```{r}
+```r
 y1.ar4 = ar(y1var, aic=FALSE, order.max=4, method="ols")
 plot(forecast(y1.ar4, 10))
 
@@ -353,14 +353,14 @@ plot(forecast(y1.ar10, 10))
 From the RMSE, AIC, BIC, and how the forecasts look for both models, we will decide that the AR(10) model is better at predicting the monthly percentage change of TSLA.
 
 ### NVDA
-```{r}
+```r
 # Fit AR(p) model
 
 y2 <- NVDA.ts[,"percentagechange"]
 AR4y2 <- dynlm(y2~L(y2,4))
 ```
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # ACF & PACF of Residuals
 par(mfrow=c(1,2))
 
@@ -370,12 +370,12 @@ pacf(AR4y2$residuals)
 
 The PACF of residuals for NVIDIA for our AR(4) model showed one significant correlation at 16 periods back. As such, we created an AR(16) model that includeded the fourth, and sixteenth period lags which eliminated all significant correlations of stock prices in the past.
 
-```{r}
+```r
 # Re-fit AR model
 AR16y2 <- dynlm(y2~L(y2,4)+L(y2,15)+L(y2,16))
 ```
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # ACF & PACF of Residuals
 
 par(mfrow=c(1,2))
@@ -385,7 +385,7 @@ pacf(AR16y2$residuals)
 
 The new model's PACF shows no significant correlation across error terms in the past.
 
-```{r}
+```r
 # Train Test Split
 ## MODEL 1
 
@@ -407,7 +407,7 @@ RMSE1y2 <- sqrt(MSE1y2)
 RMSE1y2
 ```
 
-```{r}
+```r
 # Train Test Split
 ## MODEL 2
 
@@ -432,19 +432,19 @@ RMSE2y2
 
 To determine which model is better, we split the data and used test data to evaluate the performance of each model. The Root Mean Squared Error (RMSE) for our AR(16) model is 14.46 compared to 14.27 from our AR(4) model.
 
-```{r}
+```r
 # AIC
 AIC(AR4y2, AR16y2)
 ```
 
-```{r}
+```r
 # BIC
 BIC(AR4y2, AR16y2)
 ```
 
 However, the AR(16) model produced a lower AIC and BIC of 1151.132 and 1166.050 respectively. This means the benefit in marginal prediction accuracy from adding the sixteenth lag outweighs the penalty of adding new variables in the model. Given this, we prefer to use the AR(16) model.
 
-```{r}
+```r
 y2.ar4 = ar(y2var, aic=FALSE, order.max=4, method="ols")
 plot(forecast(y2.ar4, 10))
 
@@ -461,7 +461,7 @@ This solidifies that when wanting to use an AR model, using the lags on our AR(1
 
 ## ARDL(p,q)
 
-```{r}
+```r
 x1 <- TSLA.ts[,"sentiment"]
 x2 <- TSLA.ts[,"interest"]
 
@@ -471,7 +471,7 @@ x2mean <- mean(x2)
 
 ### TSLA
 
-```{r}
+```r
 # First Model using Sentiment as a Variable
 
 ARDL1y1 <- dynlm(y1~L(y1,1)+L(y1,4)+L(x1,1)+L(x1,2))
@@ -480,7 +480,7 @@ ardl1y1.mod <- ardlDlm(percentagechange~sentiment,data=TSLA.table, p=4,q=2)
 
 Our first ARDL model for TESLA's stock uses our news sentiment data to try and predict the stock's monthly percentage change. From the PACF plot for both percentage change and news sentiment, we decided to include percentage change 4 lags back, and news sentiment 2 lags back into our model.
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # ACF & PACF
 
 par(mfrow=c(1,2))
@@ -489,7 +489,7 @@ pacf(ARDL1y1$residuals)
 ```
 Looking at our model's residual's PACF plot, we see no other significiant autocorrelation spikes, thus we move forward with this model.
 
-```{r}
+```r
 # Second Model using Interest Rates as a Variable
 
 ARDL2y1 <- dynlm(y1~L(y1,1)+L(y1,4)+L(x2,1)+L(x2,3))
@@ -498,7 +498,7 @@ ardl2y1.mod <- ardlDlm(percentagechange~interest,data=TSLA.table, p=4,q=3)
 
 Our second ARDL model for TESLA's stock uses our interest rate data to try and predict the stock's monthly percentage change. From the PACF plot for both percentage change and interest rate, we decided to keep including percentage change 4 lags back, but use interest rates 3 lags back into our model.
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # ACF & PACF
 
 par(mfrow=c(1,2))
@@ -508,7 +508,7 @@ pacf(ARDL2y1$residuals)
 
 Looking at our PACF of the residuals of our second model, there is also no significant autocorrelation spikes, and we also move forward with this model.
 
-```{r}
+```r
 # Train Test Split
 # Model 1
 y1var <- TSLA.table$percentagechange
@@ -534,7 +534,7 @@ RMSE3y1 <- sqrt(MSE3y1)
 RMSE3y1
 ```
 
-```{r}
+```r
 # Train Test Split
 # Model 2
 
@@ -564,19 +564,19 @@ Splitting our data 2/3-1/3 as a train-test split respectively, we calculated the
 
 Though 22.5% seems large for a stock, we can rationalize this value considering the volatility of TESLA's stock.
 
-```{r}
+```r
 # AIC
 AIC(ARDL1y1, ARDL2y1)
 ```
 
-```{r}
+```r
 # BIC
 BIC(ARDL1y1, ARDL2y1)
 ```
 
 To further investigate which variable is a better predcitor of TESLA's stock monthly percentage change, we calculated the AIC and BIC values of both models, and since the second model shows to be the better performer, we can conclude that interest rates is a better predictor.
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # 10 step ahead forecast
 
 fcast1y1 <- dLagM::forecast(ardl1y1.mod, h=10, c(x1mean,x1mean,x1mean,x1mean,x1mean,x1mean,x1mean,x1mean,x1mean,x1mean), interval=TRUE)
@@ -599,7 +599,7 @@ From what we see, the second model seems to have a more realistic forecast compa
 This solidifies that when wanting to use an ARDL model, using interest rates as a predictor is better than using news sentiment as a predictor.
 
 ### NVDA 
-```{r}
+```r
 # First Model using Sentiment as a Variable
 
 ARDL1y2 <- dynlm(y2~L(y2,1)+L(y2,4)+L(y2,16)+L(x1,1)+L(x1,2))
@@ -608,7 +608,7 @@ ardl1y2.mod <- ardlDlm(percentagechange~sentiment,data=NVDA.table, p=16,q=2)
 
 Similar to our models for TESLA's stock, our first ARDL model for NVIDIA's stock uses our news sentiment data to try and predict the stock's monthly percentage change. From the PACF plot for both percentage change and news sentiment, we decided to include percentage change 4 and 16 lags back, and news sentiment 2 lags back into our model.
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # ACF & PACF
 
 par(mfrow=c(1,2))
@@ -618,7 +618,7 @@ pacf(ARDL1y2$residuals)
 
 Looking at our model's residual's PACF plot, we see no other significiant autocorrelation spikes, thus we move forward with this model.
 
-```{r}
+```r
 # Second Model using Interest Rates as a Variable
 
 ARDL2y2 <- dynlm(y2~L(y2,1)+L(y2,4)+L(y2,16)+L(x2,1)+L(x2,3))
@@ -627,7 +627,7 @@ ardl2y2.mod <- ardlDlm(percentagechange~interest,data=NVDA.table, p=16,q=3)
 
 Our second ARDL model for NVIDIA's stock uses our interest rate data to try and predict the stock's monthly percentage change. From the PACF plot for both percentage change and interest rate, we decided to keep including percentage change 4 and 16 lags back, but use interest rates 3 lags back into our model.
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # ACF & PACF
 
 par(mfrow=c(1,2))
@@ -637,7 +637,7 @@ pacf(ARDL2y2$residuals)
 
 Looking at our PACF of the residuals of our second model, there is also no significant autocorrelation spikes, and we also move forward with this model.
 
-```{r}
+```r
 # Train Test Split
 # Model 1
 y2var <- NVDA.table$percentagechange
@@ -664,7 +664,7 @@ RMSE3y2 <- sqrt(MSE3y2)
 RMSE3y2
 ```
 
-```{r}
+```r
 # Train Test Split
 # Model 2
 
@@ -695,12 +695,12 @@ Splitting our data 2/3-1/3 as a train-test split respectively, we calculated the
 
 Though 14.29% seems large for a stock, we can rationalize this value considering the volatility of NVIDIA's stock, as well as NVIDIA's stock being less volatile than TESLA's stock.
 
-```{r}
+```r
 # AIC
 AIC(ARDL1y1, ARDL2y1)
 ```
 
-```{r}
+```r
 # BIC
 BIC(ARDL1y1, ARDL2y1)
 ```
@@ -708,7 +708,7 @@ BIC(ARDL1y1, ARDL2y1)
 To further investigate which variable is a better predcitor of NVIDIA's stock monthly percentage change, we calculated the AIC and BIC values of both models, and since the second model shows to be the better performer, we can conclude that interest rates is again the better predictor.
 
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # 10 step ahead forecast
 
 fcast1y2 <- dLagM::forecast(ardl1y2.mod, h=10, c(x1mean,x1mean,x1mean,x1mean,x1mean,x1mean,x1mean,x1mean,x1mean,x1mean), interval=TRUE)
@@ -733,7 +733,7 @@ This solidifies that when wanting to use an ARDL model, using interest rates as 
 
 ## VAR(p): Vector AutoRegression
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # CCF
 
 ccf(y1,y2, ylab="CCF", main="")
@@ -743,7 +743,7 @@ To start modelling our VAR model, we first looked at the Cross-Correlation Funct
 
 When looking at the CCF plot, TESLA’s stock price today appears to be lead by NVIDIA's stock price negatively 12 months back and positively 4 months back, which could suggest that NVIDIA's quarterly earnings report's effect on NVIDIA's stock may have predictive power over TESLA's stock price today. Two interesting spikes were that NVIDIA's stock price is negatively lead by TESLA’s price at 13 and 17 months back. These spikes could infer a negative relationship between NVIDIA's stock price with what TESLA's earning was a year ago and a quarter ago. 
 
-```{r}
+```r
 # Combine variables into 1 data frame
 
 y <- cbind(y1var,y2var)
@@ -753,14 +753,14 @@ VARselect(ycomb, lag.max=12)
 
 We tested different lag structures to determine if there is any significant correlation between 1 and 12 months back for both TESLA and NVIDIA. From looking at the results, the models that included 1 and 4 lags back produced the lowest VAR AIC score. To choose between using a model with 1 or 4 lags back of variables, the model that includes data from 4 periods back provides more economic insight due to the relevant quarterly earnings reports.
 
-```{r}
+```r
 yVAR <- VAR(ycomb, p=4)
 summary(yVAR)
 ```
 
 Our model for TESLA that includes both lagged values of TESLA and NVIDIA in the past is a better model than a model that only includes lagged values of TESLA. This is because the P-value for this model is below 5%, meaning the coefficient for the NVIDIA variable is not zero. This reveals that there is some information in NVIDIA that provides predictive power for TESLA stock.
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # Granger-Causality
 grangertest(y1~y2, order=4) 
 grangertest(y2~y1, order=4) 
@@ -770,7 +770,7 @@ In regressing TESLA stock on lagged values of TESLA and NVIDIA, the Granger-Caus
 
 When regressing NVIDIA stock on lagged values of NVIDIA and TESLA, the granger-causality test also produced a high p-value of 0.565 which means historical TESLA prices do not provide predictive power of NVIDIA's stock price.
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # IRFs
 
 irfVAR <- irf(yVAR, n.ahead=12)
@@ -779,16 +779,16 @@ plot(irfVAR)
 
 The impulse response function reveals that information from lagged values of TESLA and NVIDIA on TESLA and NVIDIA are significant at one period and four periods back. For example, when regressing TESLA on TESLA and NVIDIA, a shock in NVIDIA's stock price will have an effect on TESLA's stock price in the most recent period and four periods back - vice/versa. The increase in the effect of shocks four periods back is odd but makes sense when thinking about financial reporting and quarterly earnings reports.
 
-```{r, fig.width=8, fig.height=6, fig.align='center'}
+```r
 # Plot (Data, fitted, ACF, PACF)
 plot(yVAR)
 ```
 
-```{r, out.width="75%", fig.align='center'}
+```r
 plot(y)
 ```
 
-```{r}
+```r
 # Train Test Split for y1
 
 VAR <- data.frame(ycomb)
@@ -817,7 +817,7 @@ RMSE1VAR <- sqrt(MSE1VAR)
 RMSE1VAR
 ```
 
-```{r}
+```r
 # Train Test Split for y2
 
 VAR_train2 <- VAR[1:121,]
@@ -834,71 +834,71 @@ RMSE2VAR
 
 When dividing the dataset and testing the VAR model of TESLA on TESLA and NVIDIA, we produced a RMSE of 19.08. When Regressing NVIDIA on NVIDIA and TESLA, we found a RMSE of 15.57 - an almost 25% lower error. This shows that it's far easier to predict the future stock price of NVIDIA than TESLA, and this makes sense because TESLA is historically a more volatile stock.
 
-```{r}
+```r
 # AIC 
 AIC(yVAR)
 ```
 
-```{r}
+```r
 # BIC
 BIC(yVAR)
 ```
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # n-step-ahead Forecast
 varpredict <- predict(object=yVAR, n.ahead=12)
 plot(varpredict)
 ```
 
-Our 10-step ahead forecast for both TESLA and NVIDIA predict relatively stable changes in stock prices between 0% and 5%. This makes sense as the average economic growth rate for a healthy economy is around 2-3%.
+Our 10-step ahead forecast for both TESLA and NVIDIA predicts relatively stable changes in stock prices between 0% and 5%. This makes sense as the average economic growth rate for a healthy economy is around 2-3%.
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # FEVD
 plot(fevd(yVAR, n.ahead=12))
 ```
-The FEVD plot for TESLA shows that the forecasted stock price error variance is attributable to historical TESLA data. On the same token, NVIDIA’s forecasted stock price errors are attributed to historical data of itself. This is consistent with our findings in the IRF where prediction power of the model is heavily dependent on the lagged values of the response variable compared to other variables.
+The FEVD plot for TESLA shows that the forecasted stock price error variance is attributable to historical TESLA data. On the same token, NVIDIA’s forecasted stock price errors are attributed to historical data of itself. This is consistent with our findings in the IRF where the prediction power of the model is heavily dependent on the lagged values of the response variable compared to other variables.
 
-```{r, out.width="75%", fig.align='center'}
+```r
 # CUSUM - Cumulative Sum Plot
 plot(stability(yVAR, type="Rec-CUSUM"),plot.type="single")
 ```
 
-Our CUSUM plot shows that our model's black line (mean cumulative sum of recursive errors) is close to 0 and between the confidence interval - telling us that both of our models are stable and shows no parameter instabilities which means that the coefficients of the model does not change significantly over time. Additionally, our model residuals are homoskedastic, not auto-correlated, and will perform relatively well both in and out of sample data.  
+Our CUSUM plot shows that our model's black line (mean cumulative sum of recursive errors) is close to 0 and between the confidence interval - telling us that both of our models are stable and show no parameter instabilities which means that the coefficients of the model does not change significantly over time. Additionally, our model residuals are homoskedastic, not auto-correlated, and will perform relatively well both in and out of sample data.  
 
-One important note is that as time progresses and we forecast more into the future, the cumulative sum of recursive errors increases past 0.4 units of time. This is expected as it becomes harder to predict stock prices farther into the future.
+One important note is that as time progresses and we forecast more into the future, the cumulative sum of recursive errors increases past 0.4 units of time. This is expected as it becomes harder to predict stock prices further into the future.
 
 ***
 
 ## Conclusions and Findings
 
-```{r}
+```r
 # Predicting TSLA
 
 AIC(AR10y1, ARDL2y1, yVAR)
 BIC(AR10y1, ARDL2y1, yVAR)
 ```
 
-```{r}
+```r
 RMSE2y1 # AR y1
 RMSE4y1 # ARDL y1
 RMSE1VAR # VAR y1
 ```
 
-```{r}
+```r
 # Predicting NVDA
 
 AIC(AR16y2, ARDL2y2, yVAR)
 BIC(AR16y2, ARDL2y2, yVAR)
 ```
 
-```{r}
+```r
 RMSE2y2 # AR y2
 RMSE4y2 # ARDL y2
 RMSE2VAR # VAR y2
 ```
 
-After analyzing all the findings from our project, we conclude that there is no significant relationship that exists between NVIDIA and TESLA. Even though Elon Musk had said himself that TESLA relies on the hardware that NVIDIA produces, it seems that based on their relationship with NVIDIA is not enough to predict TESLA’s percentage change in stocks. We found that increasing the lags would make better predictions, but the Granger causality test and FEVD agree that using NVIDIA’s lagged values is no better than just using TESLA’s lagged values. Referencing the p-values from Granger and the visual confirmation from FEVD. Seems like using each stock data respectively would explain their individual growth would be better than trying to use each other to predict some sort of relationship, possibly a case of correlation is not causation.  
+After analyzing all the findings from our project, we conclude that no significant relationship exists between NVIDIA and TESLA. Even though Elon Musk had said himself that TESLA relies on the hardware that NVIDIA produces, it seems that based on their relationship with NVIDIA is not enough to predict TESLA’s percentage change in stocks. We found that increasing the lags would make better predictions, but the Granger causality test and FEVD agree that using NVIDIA’s lagged values is no better than just using TESLA’s lagged values. Referencing the p-values from Granger and the visual confirmation from FEVD. It seems like using each stock data respectively would explain their individual growth would be better than trying to use each other to predict some relationship, possibly a case of correlation is not causation.  
 
 
-This conclusion is also backed by the overall performance of our models through looking at the RMSE, AIC, and BIC's of all our AR, ARDL, and VAR model which is showing that for both TESLA and NVIDIA stock, there is a much better predictive power over their respective stocks when using their own lags, or an external variable and its lags. In our case here, the best variable to use to predict a stock's monthly percentage change is interest rates over news sentiment.
+This conclusion is also backed by the overall performance of our models by looking at the RMSE, AIC, and BICs of all our AR, ARDL, and VAR models which shows that for both TESLA and NVIDIA stock, there is a much better predictive power over their respective stocks when using their lags, or an external variable and its lags. In our case here, the best variable to use to predict a stock's monthly percentage change is interest rates over news sentiment.
 

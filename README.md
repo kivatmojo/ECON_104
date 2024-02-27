@@ -1,4 +1,7 @@
 # Data Science for Economists: ECON 104 at UCLA
+***
+
+## Syllabus: [Econ104_W2024.pdf](https://github.com/kivatmojo/econ_104/files/14426522/Econ104_W2024.pdf)
 ## Tools Used: R Programming  
 
 ***

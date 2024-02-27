@@ -1,5 +1,8 @@
 # Multiple Regression Modelling
-## Markdown PDF: [Project_1.pdf](https://github.com/kivatmojo/econ_104/files/14412101/Project_1.pdf)
+***
+
+## Project Prompt: [Project1.pdf](https://github.com/kivatmojo/econ_104/files/14426495/Project1.pdf)
+## Final Paper: [Project_1.pdf](https://github.com/kivatmojo/econ_104/files/14412101/Project_1.pdf)
 
 ***
 

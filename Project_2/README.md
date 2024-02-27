@@ -1,5 +1,7 @@
 # Time Series Analysis and Modelling
-## Project PDF: [Project_2.pdf](https://github.com/kivatmojo/econ_104/files/14412109/Project_2.pdf)
+***
+## Project Prompt: [Project2.pdf](https://github.com/kivatmojo/econ_104/files/14426504/Project2.pdf)
+## Final Paper: [Project_2.pdf](https://github.com/kivatmojo/econ_104/files/14412109/Project_2.pdf)
 ***
 
 Datasets Used:  

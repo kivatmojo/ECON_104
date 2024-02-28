@@ -1,7 +1,8 @@
 # Time Series Analysis and Modelling
 ***
 ## Project Prompt: [Project2.pdf](https://github.com/kivatmojo/econ_104/files/14426504/Project2.pdf)
-## Final Paper: [Project_2.pdf](https://github.com/kivatmojo/econ_104/files/14412109/Project_2.pdf)
+## Final Paper: [Project_2.pdf](https://github.com/kivatmojo/econ_104/files/14441056/Project_2.pdf)
+
 ***
 
 Datasets Used:  
@@ -18,7 +19,7 @@ https://fred.stlouisfed.org/series/REAINTRATREARAT10Y
 ## Table of Contents
 1. Load and Prepare Data  
 2. Analysis of Observations  
-3. Time Series Analysis on Variables
+3. Analysis of Variables
 4. AR(p)
 5. ARDL(p,q)
 6. VAR(p): Vector AutoRegression
@@ -108,14 +109,11 @@ NVDA.table <- NVDA.table %>%
 
 ```
 
-The variables we chose to analyze were TESLA and NVIDIA stock prices, and the effect, if any, both stocks have on one another's price. TESLA is a technology and clean energy company that builds electric cars and energy storage products. NVIDIA Corporation is a multinational technology company primarily known for designing graphics processing units (GPUs) for the gaming and professional markets.  
-
+For this project, what we chose to analyze were TESLA and NVIDIA stock prices, and the effect, if any, both stocks have on one another's price. TESLA is a technology and clean energy company that builds electric cars and energy storage products. NVIDIA Corporation is a multinational technology company primarily known for designing graphics processing units (GPUs) for the gaming and professional markets.  
 
 As TESLA builds its self-driving technology and neural networks, they have become a recent customer of NVIDIA and their chips. We believe this relationship will result in some correlation in the company's stock prices.  
 
-
 In this project, we are using stock price data from 2010 to present day as TESLA went public on June 29, 2010. We chose to use news sentiment data, expected inflation rates, and real interest rates as our predictors for determining future stock prices. We converted the stock prices to monthly percentage change, and had all our predictors be a monthly figure.  
-
 
 Sentiment data refers to information gathered from various sources, such as social media, news articles, financial reports, and other textual data, to gauge the overall sentiment or mood surrounding the world. We are also using real interest rates and expected inflation rates from FRED. We believe these predictors can influence investors' decisions to save and invest in the economy, and therefore will affect company stock prices.  
 ***
@@ -125,7 +123,6 @@ Sentiment data refers to information gathered from various sources, such as soci
 ```r
 summary(TSLA.table)
 ```
-
 ```r
 summary(NVDA.table)
 ```
@@ -699,16 +696,15 @@ Though 14.29% seems large for a stock, we can rationalize this value considering
 
 ```r
 # AIC
-AIC(ARDL1y1, ARDL2y1)
+AIC(ARDL1y2, ARDL2y2)
 ```
 
 ```r
 # BIC
-BIC(ARDL1y1, ARDL2y1)
+BIC(ARDL1y2, ARDL2y2)
 ```
 
-To further investigate which variable is a better predcitor of NVIDIA's stock monthly percentage change, we calculated the AIC and BIC values of both models, and since the second model shows to be the better performer, we can conclude that interest rates is again the better predictor.
-
+To further investigate which variable is a better predictor of NVIDIA's stock monthly percentage change, we calculated the AIC and BIC values of both models, and it shows that the first model, using sentiment, shows to be the better performer by 1 point which is not much.
 
 ```r
 # 10 step ahead forecast

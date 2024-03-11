@@ -13,7 +13,6 @@
 Datasets used:  
 
 Financial Statements of Major Companies (2009 - 2023)  
-
 https://www.kaggle.com/datasets/rish59/financial-statements-of-major-companies2009-2023?resource=download  
   
 

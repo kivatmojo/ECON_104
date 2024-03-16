@@ -70,6 +70,8 @@ colnames(music_data) <- c("streams_thousands", "bpm", "artist_count", "in_apple_
 ```r
 summary(music_data)
 ```
+<img width="487" alt="Screen Shot 2024-03-15 at 18 27 54" src="https://github.com/kivatmojo/econ_104/assets/137433466/f7f85fbf-a6c5-4761-9c77-8b387a90a8ba">
+
 These tables give us the five statistical summaries of each of our response and explanatory variables. The point of this section is to give us a simple explanation of the character of our data.  
 
 One variable we found interesting is “instrumentalness”. The median is 0 and the mean is 1.6 - telling us that our dataset contains songs that are not instrumental.  
@@ -90,6 +92,7 @@ boxplot(music_data$in_spotify_charts, ylab = "# of Spotify Charts")
 boxplot(music_data$in_apple_playlists, ylab = "# of Apple Playlists")
 boxplot(music_data$in_apple_charts, ylab = "# of Apple Charts")
 ```
+<img width="419" alt="Screen Shot 2024-03-15 at 18 28 23" src="https://github.com/kivatmojo/econ_104/assets/137433466/f057820a-de93-4428-b862-d13f2593a4c3">
 
 ```r
 music_character <- gather(music_data, key = "Characteristics", value = "Percentage", 
@@ -97,6 +100,7 @@ music_character <- gather(music_data, key = "Characteristics", value = "Percenta
                           liveness, speechiness)
 ggplot(music_character, aes(x = Characteristics, y = Percentage)) + geom_boxplot()
 ```
+<img width="395" alt="Screen Shot 2024-03-15 at 18 28 33" src="https://github.com/kivatmojo/econ_104/assets/137433466/fbc407b4-26af-48f3-a9cb-b4eb981ca245">
 
 The box plots are a visual representation of the five statistical summary data shown above. The box represents the data between the 25th and 75th percentile while the bold black line indicates the mean of the data.  
 
@@ -120,6 +124,8 @@ hist(music_data$instrumentalness, main="Instrumentalness %")
 hist(music_data$liveness, main="Liveness %")
 hist(music_data$speechiness, main="Speechiness %")
 ```
+<img width="377" alt="Screen Shot 2024-03-15 at 18 28 44" src="https://github.com/kivatmojo/econ_104/assets/137433466/c0b0be79-dee6-4ca8-9b90-2bbf22267ea6">
+<img width="392" alt="Screen Shot 2024-03-15 at 18 28 50" src="https://github.com/kivatmojo/econ_104/assets/137433466/11c65ca6-8547-4ea6-9983-fce93d037ba7">
 
 When looking at the histogram of streams, we see a skewed distribution to the right - meaning there are many low-streamed songs and relatively low high-streamed songs. This makes sense as it’s harder to create popular songs.  
 
@@ -134,6 +140,7 @@ The spotify playlist - the amount of playlist each song is in, and spotify chart
 cor.table = cor(music_data)
 corrplot(cor.table, method = "square", tl.col="black")
 ```
+<img width="449" alt="Screen Shot 2024-03-15 at 18 29 04" src="https://github.com/kivatmojo/econ_104/assets/137433466/aa9c412f-1f41-4be2-a3a7-00081413584f">
 
 The correlation plot represents how each variable relates to each other. For example, “accousticness” and “liveliness” are negatively correlated which is consistent with what we hear in songs we listen to.   
 
@@ -151,7 +158,10 @@ plot(streams_thousands~in_spotify_playlists, data=music_data, ylab="Streams", xl
 plot(streams_thousands~in_spotify_charts, data=music_data, ylab="Streams", xlab="Spotify Charts")
 plot(streams_thousands~in_apple_playlists, data=music_data, ylab="Streams", xlab="Apple Playlists")
 plot(streams_thousands~in_apple_charts, data=music_data, ylab="Streams", xlab="Apple Charts")
+```
+<img width="457" alt="Screen Shot 2024-03-15 at 18 29 19" src="https://github.com/kivatmojo/econ_104/assets/137433466/226b830e-a596-4349-aa8c-48f3c1ae9776">
 
+```r
 plot(streams_thousands~energy, data=music_data, ylab="Streams", xlab="Energy %")
 plot(streams_thousands~danceability, data=music_data, ylab="Streams", xlab="Danceability %")
 plot(streams_thousands~liveness, data=music_data, ylab="Streams", xlab="Liveness %")
@@ -159,6 +169,8 @@ plot(streams_thousands~speechiness, data=music_data, ylab="Streams", xlab="Speec
 plot(streams_thousands~acousticness, data=music_data, ylab="Streams", xlab="Acousticness %")
 plot(streams_thousands~instrumentalness, data=music_data, ylab="Streams", xlab="Instrumentalness %")
 ```
+<img width="455" alt="Screen Shot 2024-03-15 at 18 29 29" src="https://github.com/kivatmojo/econ_104/assets/137433466/d1c4f525-b783-4ee3-b519-f23f478459c9">
+
 In efforts to further understand our data, we created scatter plots for each explanatory variable and its relationship to the number of streams a song earns. We noticed that both Apple and Spotify charts and playlist variables had a similar distribution - which validates the significance of their prediction power on number of streams. Additionally, we found the instrulmentalness data distribution to be very different, with a steep drop off when songs become more instrumental. This makes sense as consumers listen to much less classical music compared to several hundred years ago.  
 
 Lastly, one variable I found interesting was the liveliness because the data shows that the more lively the song is, the more likely the song will earn less streams. This may pose an interesting reflection in consumer preferences where we prefer more relaxing than energetic songs. 
@@ -174,6 +186,7 @@ regmod <- lm(streams_thousands ~ bpm + artist_count +
                        liveness + speechiness, data = music_data)
 summary(regmod) 
 ```
+<img width="498" alt="Screen Shot 2024-03-15 at 18 29 58" src="https://github.com/kivatmojo/econ_104/assets/137433466/17fb42ac-eb58-4f7e-8f7d-3750c1875d2a">
 In looking at the regression summary, artist count, Apple playlist, Spotify playlist, Spotify charts, and valence are statistically significant - meaning there is a low chance that the prediction power of the variable is due to chance. One interesting trend I noticed was that many characteristic variables such as “energy” and “liveliness" were not statistically significant. This may be due to the fact that the measurement of these variables is subjective.  
 
 Spotify and Apple playlist variables represent the number of playlists the streamed song is in. As such, if a song is added into more playlists, the more streams it is likely to have. Artist count represents the number of artists within the song. Valence represents the amount of positivity a song conveys. A positive correlation between valence and streams makes sense as many people listen to music during leisure time and to feel good.  
@@ -194,10 +207,14 @@ par(mfrow = c(1,2))
 
 boxplot(music_data$streams_thousands, ylab = "Total Streams in Thousands", main= "Original Data") 
 boxplot(music_screened$streams_thousands, ylab = "Total Streams in Thousands", main= "Screened Data")
+```
+<img width="400" alt="Screen Shot 2024-03-15 at 18 30 34" src="https://github.com/kivatmojo/econ_104/assets/137433466/f2dc49b8-3870-445b-966e-4378cda2ae65">
 
+```r
 # Comparing 5 number statistics between original data and screened data
 summary(music_screened)
 ```
+<img width="478" alt="Screen Shot 2024-03-15 at 18 31 11" src="https://github.com/kivatmojo/econ_104/assets/137433466/c4d7486e-1d5a-40ce-8db3-6fccc5320b8b">
 After creating box plots for acousticness, danceability, energy, instrulmentalness, liveness, speechiness, we noticed outliers for all these variables. One variable we found interesting was danceability because there were many outliers below the mean. This was interesting because I thought easy-to-dance to songs are more likely to become popular from TikTok.  
 
 There does not seem to be much difference between the data with "no outliers" and the original data through the boxplots. But when comparing the summary of the original dataset to the screened dataset, removing the outliers seems to have "shrunk" the dataset to not include some of those top-end outliers. 
@@ -224,6 +241,9 @@ ss=regsubsets(streams_thousands ~ bpm + artist_count + in_apple_charts
 subsets(ss, statistic="cp", legend=F, main= "Mallows CP"
         , col= "steelblue4",ylim=c(0,8))
 ```
+<img width="438" alt="Screen Shot 2024-03-15 at 18 31 33" src="https://github.com/kivatmojo/econ_104/assets/137433466/2c39bc9d-73f2-4d04-b210-c63741fff053">
+<img width="234" alt="Screen Shot 2024-03-15 at 18 31 43" src="https://github.com/kivatmojo/econ_104/assets/137433466/69bc7e16-d545-4d27-a86e-e70f88f741fa">
+
 Based on the data, Mallows CP identified the optimal model choice to have 7 parameters: artist count, in_apple_playlists, in_apple_charts, in_spotify_charts, in_spotify_playlists, valence, and instrumentalness into the regression model.  
 
 ### 2. Boruta  
@@ -233,7 +253,10 @@ Based on the data, Mallows CP identified the optimal model choice to have 7 para
 Bor.res <- Boruta(streams_thousands~., data=music_data, doTrace=2)
 
 plot(Bor.res, las=3, xlab="")
+```
+<img width="417" alt="Screen Shot 2024-03-15 at 18 31 58" src="https://github.com/kivatmojo/econ_104/assets/137433466/2e4ad4c0-b157-45ca-90f5-891f2ca08735">
 
+```r
 boruta_signif <- names(Bor.res$finalDecision[Bor.res$finalDecision%in%c("Confirmed","Tentative")])
 boruta_signif_conf <- names(Bor.res$finalDecision[Bor.res$finalDecision%in%c("Confirmed")])
 boruta_signif_rej <- names(Bor.res$finalDecision[Bor.res$finalDecision%in%c("Rejected")])
@@ -241,6 +264,13 @@ boruta_signif_tent <- names(Bor.res$finalDecision[Bor.res$finalDecision%in%c("Te
 
 print(boruta_signif_conf)
 ```
+<img width="506" alt="Screen Shot 2024-03-15 at 18 32 28" src="https://github.com/kivatmojo/econ_104/assets/137433466/4fddc440-f573-476f-a627-cc603c1651b9">
+
+```r
+attStats(Bor.res)
+```
+<img width="468" alt="Screen Shot 2024-03-15 at 18 33 21" src="https://github.com/kivatmojo/econ_104/assets/137433466/8ee34462-ecbc-4c33-83d0-9541a013f79b">
+
 Predictors we are keeping with screened data:  
 - artist_count  
 - in_apple_charts  
@@ -265,9 +295,11 @@ regmod2 <- lm(streams_thousands~artist_count + in_apple_charts + in_apple_playli
 tab <- tidy(vif(regmod2))
 kable(tab, col.names=c("variables","VIF"))
 ```
-Variance inflation factor test (VIF) determines if any regressors are correlated with each other. Colinearity between explanatory variables inflate the variance of the residuals and standard errors. A score of above 5 in the VIF test indicates that the variable is colinear.   
+<img width="185" alt="Screen Shot 2024-03-15 at 18 34 33" src="https://github.com/kivatmojo/econ_104/assets/137433466/b6d35abb-e929-4cbb-bed5-2d8867f88372">
 
-In our test of the explanatory variables, all displayed scores of less than 5, revealing there are no problems with colinearity. I found this slightly surprising because I’d imagine that spotify playlist data and apple playlist data provide the same prediction power. However, because there is significant variation within our dataset, these two variables do provide substantial power to estimate the parameters precisely.  
+Variance inflation factor test (VIF) determines if any regressors are correlated with each other. Colinearity between explanatory variables inflates the variance of the residuals and standard errors. A score of above 5 in the VIF test indicates that the variable is colinear.   
+
+In our test of the explanatory variables, all displayed scores of less than 5, revealing there are no problems with collinearity. I found this slightly surprising because I imagine that Spotify and Apple playlist data provide the same prediction power. However, because there is significant variation within our dataset, these two variables do provide substantial power to estimate the parameters precisely.  
 ***
 ## Residuals
 ```r
@@ -293,6 +325,8 @@ plot(music_data$speechiness,res,xlab="Speechiness"
 plot(music_data$valence,res,xlab="Valence"
      , ylab="residuals")
 ```
+<img width="564" alt="Screen Shot 2024-03-15 at 18 35 02" src="https://github.com/kivatmojo/econ_104/assets/137433466/b27ccccc-c678-4d69-9df7-355b89dbc2f3">
+
 After plotting the residuals against the fitted values, we noticed an increase in the variance of error terms in songs ranging from 0 to 50,000 predicted streams, then slowly tapering down after.  
 
 This makes sense as it’s harder to predict streams of songs that are not very popular. As such, the model will over predict certain songs and under-predict others. Overall, this suggests a trend in the errors and a sign of heteroskedasticity.  
@@ -300,6 +334,8 @@ This makes sense as it’s harder to predict streams of songs that are not very 
 ```r
 spreadLevelPlot(regmod2)
 ```
+<img width="545" alt="Screen Shot 2024-03-15 at 18 35 15" src="https://github.com/kivatmojo/econ_104/assets/137433466/c7c9b4e6-07bf-4cdb-b73b-b44fe3c76331">
+
 Looking at the spread-level plot that regresses the fitted values of Y on the residuals, we noticed an upward trend. This means that when the predicted number of streams a song has based on the model, the larger the error there is, thus heteroskedasticity is present.  
 
 ***
@@ -307,6 +343,8 @@ Looking at the spread-level plot that regresses the fitted values of Y on the re
 ```r
 resettest(regmod2, power=2:3, type="fitted")
 ```
+<img width="401" alt="Screen Shot 2024-03-15 at 18 36 07" src="https://github.com/kivatmojo/econ_104/assets/137433466/85364d3a-0e8a-4ebf-9a89-d89642d73037">
+
 When running our reset test, the P-values are insignificant and the F-statistic exceeds the critical value, so we reject the null hypothesis that the coefficients of the new terms are zero. In other words, a zero p-value indicates that adding a higher power or interaction does not improve the model.  
 
 ```r
@@ -320,7 +358,9 @@ regmod3 <- lm(streams_thousands~artist_count
 
 resettest(regmod3, power=2:3, type="fitted")
 ```
-Through intuition, as well as trial and error, we concluded that "in_spotify_playlists" and "in_spotify_charts" is a better predictor of streams when we transformed them into an exponential function. The RESET test results on the new model also confirms that the model is now better specified.
+<img width="358" alt="Screen Shot 2024-03-15 at 18 36 18" src="https://github.com/kivatmojo/econ_104/assets/137433466/89e678d3-eae7-452e-949a-af6ccce929d3">
+
+Through intuition, as well as trial and error, we concluded that "in_spotify_playlists" and "in_spotify_charts" are better predictors of streams when we transformed them into an exponential function. The RESET test results on the new model also confirm that the model is now better specified.
 
 The choice of variables to transform makes sense because the more playlists and charts a song is in, the more it gets into other playlists and charts, which ultimately leads to more streams.  
 ***
@@ -329,21 +369,27 @@ The choice of variables to transform makes sense because the more playlists and 
 # NCV Test
 ncvTest(regmod3)
 ```
+<img width="387" alt="Screen Shot 2024-03-15 at 18 37 17" src="https://github.com/kivatmojo/econ_104/assets/137433466/ffb93f74-c6a8-41fd-abba-577028d35bea">
+
 After running the NCV test, since the p-value is less than the 5% significance level, we reject the null hypothesis that the variance is constant. Thus, our model has non-constant variance.  
 
 ```r
 # BP Test
 bptest(regmod3)
 ```
-The BP test results signifies heteroskedasticity.  
+<img width="346" alt="Screen Shot 2024-03-15 at 18 37 28" src="https://github.com/kivatmojo/econ_104/assets/137433466/30db187b-a7fa-4f9e-add4-e77b52f131d0">
+
+The BP test results signify heteroskedasticity.  
 
 ```r
 # GQ Test
 gqtest(regmod3)
 ```
+<img width="430" alt="Screen Shot 2024-03-15 at 18 37 46" src="https://github.com/kivatmojo/econ_104/assets/137433466/a8a80d30-aee9-4310-a82f-367afc4518f2">
+
 The GQ test says no heteroskedasticity is present.  
 
-Since the GQ test and the BP test disagrees, we need to perform the White test.
+Since the GQ test and the BP test disagree, we need to perform the White test.
 
 ```r
 alpha <- 0.05
@@ -355,7 +401,6 @@ modres <- lm(ressq~artist_count + in_spotify_playlists + I(in_spotify_playlists^
               + in_apple_charts
               + instrumentalness + speechiness
               , data=music_data)
-summary(modres)
 
 N <- nobs(modres)
 gmodres <-glance(modres)
@@ -366,6 +411,8 @@ chisq <- N*Rsqres
 pval <- 1-pchisq(chisq,S-1)
 print(pval)
 ```
+<img width="83" alt="Screen Shot 2024-03-15 at 18 38 16" src="https://github.com/kivatmojo/econ_104/assets/137433466/5cf62ed6-291b-4756-8090-11c522c52fb1">
+
 The white test confirms the presence of heteroskedasticity.  
 
 ***
@@ -375,10 +422,15 @@ The white test confirms the presence of heteroskedasticity.
 #Using white/robust standard errors
 cov1 <- hccm(regmod2, type="hc1")
 coeftest(regmod2, vcov.=cov1)
+```
+<img width="523" alt="Screen Shot 2024-03-15 at 18 38 38" src="https://github.com/kivatmojo/econ_104/assets/137433466/d8212d97-809a-42fd-8673-cfff62beaaff">
 
+```r
 # Standard SE
 coeftest(regmod2)
 ```
+<img width="521" alt="Screen Shot 2024-03-15 at 18 38 55" src="https://github.com/kivatmojo/econ_104/assets/137433466/88e3a458-2922-4b09-9a14-c968a2f770b8">
+
 These results show that there is an increase in Std. Error when trying to fix the model with the White Robust Std. Errors.  
 
 Thus, we are going to attempt to use GLS.
@@ -426,6 +478,8 @@ regmod.fgls <- lm(streams_thousands~artist_count
 
 tidy(regmod.fgls)
 ```
+<img width="494" alt="Screen Shot 2024-03-15 at 18 39 15" src="https://github.com/kivatmojo/econ_104/assets/137433466/33898814-9483-470f-b1af-511dfdc32237">
+
 Feasible GLS gives us a significantly lower SE.
 
 ***
@@ -445,8 +499,10 @@ plot(ss2_sumtest$bic)
 ss2_sumtest$bic
 ss2_sumtest
 ```
-We ran the BIC test on our model with FGLS, and the result concluded to the 
-best model being the one with 4 variables:   
+<img width="433" alt="Screen Shot 2024-03-15 at 18 39 32" src="https://github.com/kivatmojo/econ_104/assets/137433466/9a1e796b-16eb-4b04-af6b-fdc21f113516">
+<img width="458" alt="Screen Shot 2024-03-15 at 18 40 21" src="https://github.com/kivatmojo/econ_104/assets/137433466/170be9eb-a4bd-45b3-a70d-089b448156ff">
+
+We ran the BIC test on our model with FGLS, and the result concluded that the best model uses 4 variables:   
   
 artist_count, in_spotify_playlists, in_spotify_playlists^2 and in_apple_playlists
 
@@ -469,7 +525,9 @@ model_train <- train(streams_thousands~., data=music_mod,
                      method = "lm",trControl=train_control, weights=1/vari)
 print(model_train)
 ```
-Once we find our FGLS model that accounts for heteroskedasticity, the final step is to determine how accurate our model is. Due to this, we applied the K-fold cross validation test with 10 folds and an 80-20 split for training and testing, yielding an RMSE of 174,046. This represents 0.00008% of the data range (2,135,150,000). Our interpretation is reinforced by our models R squared of 80% which is precise by industry standards.
+<img width="458" alt="Screen Shot 2024-03-15 at 18 40 35" src="https://github.com/kivatmojo/econ_104/assets/137433466/ecbb373c-0e3e-47ec-a50b-00448e06657f">
+
+Once we have found our final model, the final step is to determine how accurate our model is. Due to this, we applied the K-fold cross-validation test with 10 folds and an 80-20 split for training and testing, yielding an RMSE of 174,046. This represents 0.00008% of the data range (2,135,150,000). Our interpretation is reinforced by our model's R squared of 80% which is precise by industry standards.
 ***
 ## Conclusions and Findings
 ```r
@@ -480,6 +538,8 @@ regmod.fgls <- lm(streams_thousands~artist_count
               
 summary(regmod.fgls)
 ```
+
+<img width="487" alt="Screen Shot 2024-03-15 at 18 41 10" src="https://github.com/kivatmojo/econ_104/assets/137433466/69ffa6f2-35f1-4f95-8034-5df4c14ae7d8">
 
 In our project, we used spotify data to create a model that best predicts the number of streams a song will have based on its music characteristics and how many playlists and charts it lands in.  
 

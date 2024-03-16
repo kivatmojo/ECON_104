@@ -104,7 +104,7 @@ ggplot(music_character, aes(x = Characteristics, y = Percentage)) + geom_boxplot
 
 The box plots are a visual representation of the five statistical summary data shown above. The box represents the data between the 25th and 75th percentile while the bold black line indicates the mean of the data.  
 
-One interesting variable we found interesting were “streams” because there were numerous outliers past the 1.5 standard deviation. This makes sense because the average song has low streams but there are also many individually popular songs.  
+One interesting variable we found interesting was “streams” because there were numerous outliers past the 1.5 standard deviation. This makes sense because the average song has low streams but there are also many individually popular songs.  
 
 ### 3. Histograms
 ```r
@@ -127,13 +127,13 @@ hist(music_data$speechiness, main="Speechiness %")
 <img width="377" alt="Screen Shot 2024-03-15 at 18 28 44" src="https://github.com/kivatmojo/econ_104/assets/137433466/c0b0be79-dee6-4ca8-9b90-2bbf22267ea6">
 <img width="392" alt="Screen Shot 2024-03-15 at 18 28 50" src="https://github.com/kivatmojo/econ_104/assets/137433466/11c65ca6-8547-4ea6-9983-fce93d037ba7">
 
-When looking at the histogram of streams, we see a skewed distribution to the right - meaning there are many low-streamed songs and relatively low high-streamed songs. This makes sense as it’s harder to create popular songs.  
+When looking at the histogram of streams, we see a skewed distribution to the right - meaning there are many low-streamed songs and relatively low-streamed songs. This makes sense as it’s harder to create popular songs.  
 
 “Acousticness”, “instrumentalness”, and “liveliness” is skewed to the left - showing that most songs exhibit low “liveliness”, “instrumentalness”, and “acousticness”. The fact that many popular songs displayed low “liveliness” scores was surprising to us as we thought this was a strong music preference.  
 
-Speechiness - the amount of spoken words in a song, is also skewed to the left. This means many consumers prefer songs with fewer words. This was an interesting finding as our group tends to enjoy songs with lyrics. However, there are also many genres that don’t include lyrics - such as EDM and binaural beats.  
+Speechiness - the amount of spoken words in a song, is also skewed to the left. This means many consumers prefer songs with fewer words. This was an interesting finding as our group tends to enjoy songs with lyrics. However, many genres don’t include lyrics - such as EDM and binaural beats.  
 
-The spotify playlist - the amount of playlist each song is in, and spotify charts variable, are as expected. It's harder to create well-produced and popular songs.  
+The Spotify playlist - the amount of playlists each song is in, and Spotify charts variable, are as expected. It's harder to create well-produced and popular songs.  
 
 ### 4. Correlation Plot
 ```r
@@ -142,9 +142,9 @@ corrplot(cor.table, method = "square", tl.col="black")
 ```
 <img width="449" alt="Screen Shot 2024-03-15 at 18 29 04" src="https://github.com/kivatmojo/econ_104/assets/137433466/aa9c412f-1f41-4be2-a3a7-00081413584f">
 
-The correlation plot represents how each variable relates to each other. For example, “accousticness” and “liveliness” are negatively correlated which is consistent with what we hear in songs we listen to.   
+The correlation plot represents how each variable relates to each other. For example, “acousticness” and “liveliness” are negatively correlated which is consistent with what we hear in songs we listen to.   
 
-Another thing that we notice is how positively correlated a song being in apple playlists and spotify playlists are. This means that the population is consistent with their playlist behavior across both streaming platforms.  
+Another thing that we notice is how positively correlated a song being in Apple playlists and Spotify playlists are. This means that the population is consistent with their playlist behavior across both streaming platforms.  
 
 We see a high correlation between the number of songs the playlist is in and the number of streams. However, this is fine because streams is the responsive variable, and playlist is an explanatory variable.  
 
@@ -171,9 +171,9 @@ plot(streams_thousands~instrumentalness, data=music_data, ylab="Streams", xlab="
 ```
 <img width="455" alt="Screen Shot 2024-03-15 at 18 29 29" src="https://github.com/kivatmojo/econ_104/assets/137433466/d1c4f525-b783-4ee3-b519-f23f478459c9">
 
-In efforts to further understand our data, we created scatter plots for each explanatory variable and its relationship to the number of streams a song earns. We noticed that both Apple and Spotify charts and playlist variables had a similar distribution - which validates the significance of their prediction power on number of streams. Additionally, we found the instrulmentalness data distribution to be very different, with a steep drop off when songs become more instrumental. This makes sense as consumers listen to much less classical music compared to several hundred years ago.  
+To further understand our data, we created scatter plots for each explanatory variable and its relationship to the number of streams a song earns. We noticed that both Apple and Spotify charts and playlist variables had a similar distribution - which validates the significance of their prediction power on the number of streams. Additionally, we found the instrulmentalness data distribution to be very different, with a steep drop off when songs become more instrumental. This makes sense as consumers listen to much less classical music compared to several hundred years ago.  
 
-Lastly, one variable I found interesting was the liveliness because the data shows that the more lively the song is, the more likely the song will earn less streams. This may pose an interesting reflection in consumer preferences where we prefer more relaxing than energetic songs. 
+Lastly, one variable I found interesting was the liveliness because the data shows that the more lively the song is, the more likely the song will earn fewer streams. This may pose an interesting reflection on consumer preferences where we prefer more relaxing than energetic songs. 
 ***
 ## Regression Model  
 ```r
@@ -187,9 +187,10 @@ regmod <- lm(streams_thousands ~ bpm + artist_count +
 summary(regmod) 
 ```
 <img width="498" alt="Screen Shot 2024-03-15 at 18 29 58" src="https://github.com/kivatmojo/econ_104/assets/137433466/17fb42ac-eb58-4f7e-8f7d-3750c1875d2a">
-In looking at the regression summary, artist count, Apple playlist, Spotify playlist, Spotify charts, and valence are statistically significant - meaning there is a low chance that the prediction power of the variable is due to chance. One interesting trend I noticed was that many characteristic variables such as “energy” and “liveliness" were not statistically significant. This may be due to the fact that the measurement of these variables is subjective.  
 
-Spotify and Apple playlist variables represent the number of playlists the streamed song is in. As such, if a song is added into more playlists, the more streams it is likely to have. Artist count represents the number of artists within the song. Valence represents the amount of positivity a song conveys. A positive correlation between valence and streams makes sense as many people listen to music during leisure time and to feel good.  
+In looking at the regression summary, artist count, Apple playlist, Spotify playlist, Spotify charts, and valence are statistically significant - meaning there is a low chance that the prediction power of the variable is due to chance. One interesting trend I noticed was that many characteristic variables such as “energy” and “liveliness" were not statistically significant. This may be because the measurement of these variables is subjective.  
+
+Spotify and Apple playlist variables represent the number of playlists the streamed song is in. As such, if a song is added to more playlists, the more streams it is likely to have. Artist count represents the number of artists within the song. Valence represents the amount of positivity a song conveys. A positive correlation between valence and streams makes sense as many people listen to music during leisure time to feel good.  
 
 Artist count has a negative estimate, meaning that the more artists you add, the fewer streams the song will have. Playlist, Spotify charts, and valence are positive, consistent with the previously mentioned logic.  
 ***
@@ -297,7 +298,7 @@ kable(tab, col.names=c("variables","VIF"))
 ```
 <img width="185" alt="Screen Shot 2024-03-15 at 18 34 33" src="https://github.com/kivatmojo/econ_104/assets/137433466/b6d35abb-e929-4cbb-bed5-2d8867f88372">
 
-Variance inflation factor test (VIF) determines if any regressors are correlated with each other. Colinearity between explanatory variables inflates the variance of the residuals and standard errors. A score of above 5 in the VIF test indicates that the variable is colinear.   
+The variance inflation factor test (VIF) determines if any regressors are correlated with each other. Colinearity between explanatory variables inflates the variance of the residuals and standard errors. A score of above 5 in the VIF test indicates that the variable is colinear.   
 
 In our test of the explanatory variables, all displayed scores of less than 5, revealing there are no problems with collinearity. I found this slightly surprising because I imagine that Spotify and Apple playlist data provide the same prediction power. However, because there is significant variation within our dataset, these two variables do provide substantial power to estimate the parameters precisely.  
 ***
@@ -327,16 +328,16 @@ plot(music_data$valence,res,xlab="Valence"
 ```
 <img width="564" alt="Screen Shot 2024-03-15 at 18 35 02" src="https://github.com/kivatmojo/econ_104/assets/137433466/b27ccccc-c678-4d69-9df7-355b89dbc2f3">
 
-After plotting the residuals against the fitted values, we noticed an increase in the variance of error terms in songs ranging from 0 to 50,000 predicted streams, then slowly tapering down after.  
+After plotting the residuals against the fitted values, we noticed an increase in the variance of error terms in songs ranging from 0 to 50,000 predicted streams, then slowly tapering down.  
 
-This makes sense as it’s harder to predict streams of songs that are not very popular. As such, the model will over predict certain songs and under-predict others. Overall, this suggests a trend in the errors and a sign of heteroskedasticity.  
+This makes sense as it’s harder to predict streams of songs that are not very popular. As such, the model will over-predict certain songs and under-predict others. Overall, this suggests a trend in the errors and a sign of heteroskedasticity.  
 
 ```r
 spreadLevelPlot(regmod2)
 ```
 <img width="545" alt="Screen Shot 2024-03-15 at 18 35 15" src="https://github.com/kivatmojo/econ_104/assets/137433466/c7c9b4e6-07bf-4cdb-b73b-b44fe3c76331">
 
-Looking at the spread-level plot that regresses the fitted values of Y on the residuals, we noticed an upward trend. This means that when the predicted number of streams a song has based on the model, the larger the error there is, thus heteroskedasticity is present.  
+Looking at the spread-level plot that regresses the fitted values of Y on the residuals, we noticed an upward trend. This means that when the predicted number of streams a song has is based on the model, the larger the error there is, thus heteroskedasticity is present.  
 
 ***
 ## RESET Test
@@ -485,7 +486,7 @@ Feasible GLS gives us a significantly lower SE.
 ***
 ## Model Selection and Comparison
 ```r
-# Running BIC using model with FGLS
+# Running BIC using the model with FGLS
 ss2test = regsubsets(streams_thousands~artist_count
               + in_spotify_playlists + I(in_spotify_playlists^2) 
               + in_apple_playlists  
@@ -507,7 +508,7 @@ We ran the BIC test on our model with FGLS, and the result concluded that the be
 artist_count, in_spotify_playlists, in_spotify_playlists^2 and in_apple_playlists
 
 ```r
-# Make new model
+# Make the new model
 music_mod <- data.frame(music_nozero$streams_thousands,music_nozero$artist_count, 
                         music_nozero$in_spotify_playlists,I(music_nozero$in_spotify_playlists^2), 
                         music_nozero$in_apple_playlists)
@@ -541,17 +542,17 @@ summary(regmod.fgls)
 
 <img width="487" alt="Screen Shot 2024-03-15 at 18 41 10" src="https://github.com/kivatmojo/econ_104/assets/137433466/69ffa6f2-35f1-4f95-8034-5df4c14ae7d8">
 
-In our project, we used spotify data to create a model that best predicts the number of streams a song will have based on its music characteristics and how many playlists and charts it lands in.  
+In our project, we used Spotify data to create a model that best predicts the number of streams a song will have based on its music characteristics and how many playlists and charts it lands in.  
 
-After doing a constant loop of cleaning and analyzing the data through data manipulations and visualizations, we ran that data and its regression through a series of tests to test for variable importance, heteroskedasticity, and model specification, then adjusted our model to be better fit through using FGLS and higher order terms in our model. Lastly, we used the resulting model and ran it on the AIC and BIC test for model selection, and it gave us the desired model for predicting streams.  
+After doing a constant loop of cleaning and analyzing the data through data manipulations and visualizations, we ran that data and its regression through a series of tests to test for variable importance, heteroskedasticity, and model specification, then adjusted our model to be better fit through using FGLS and higher order terms in our model. Lastly, we used the resulting model and ran it on the AIC and BIC tests for model selection, and it gave us the desired model for predicting streams.  
 
-To evaluate our final model, we tested the model using k-Fold Cross Validation with k=10. The test concluded for our model to have an RMSE of 174,990.7 which means our model in average misses the likely number of streams a song has by 174,990.7 streams.   
+To evaluate our final model, we tested the model using k-fold cross-validation with k=10. The test concluded that our model has an RMSE of 174,990.7 which means our model on average misses the likely number of streams a song has by 174,990.7 streams.   
 
-We deem this to be reasonable considering our dataset has a lot of unmitigated outliers that scales up to 2 billion streams.  
+We deem this to be reasonable considering our dataset has a lot of unmitigated outliers that scale up to 2 billion streams.  
 
 Our final model to predict a song's number of streams is: $STREAMS = 129110.8402712 - 15378.0140630*ARTISTCOUNT + 94.0297995*SPOTIFYPLAYLISTS - 0.0016709*SPOTIFYPLAYLISTS^2 + 748.5154211*APPLEPLAYLISTS$  
 
-This aligns with real-world theory where aside from virality, the biggest reason of a song's success is who the song is by and if it has features to reach a broader audience, and if the song is in people's personal playlists.   
+This aligns with real-world theory where aside from virality, the biggest reason for a song's success is who the song is by if it has features to reach a broader audience, and if the song is in people's playlists.   
 
-A note on playlists is that the behavior of playlists is an exponential function because the more a song is in a playlist, the more people find the song or hear of the song from a friend and then adding that song to their own playlists, and so on.  
+A note on playlists is that the behavior of playlists is an exponential function because the more a song is in a playlist, the more people find the song or hear of the song from a friend and then add that song to their playlists, and so on.  
 

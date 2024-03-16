@@ -6,7 +6,8 @@
 
 ***
 
-## Final Paper: 
+## Final Paper: [Project_3.pdf](https://github.com/kivatmojo/econ_104/files/14621854/Project_3.pdf)
+
 
 ***
 
